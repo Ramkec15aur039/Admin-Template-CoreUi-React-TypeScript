@@ -25,6 +25,7 @@ import Logo from "./a.svg"
 const TheSidebar = () => {
   const dispatch = useDispatch();
   const show = useSelector((state) => state.sidebarShow);
+  console.log("Redux:",show);
 
   return (
     <CSidebar
