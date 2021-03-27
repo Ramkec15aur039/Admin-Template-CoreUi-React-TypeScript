@@ -7,7 +7,7 @@ import React from "react";
 // const Cards = React.lazy(() => import('./views/base/cards/Cards'));
 // const Carousels = React.lazy(() => import('./views/base/carousels/Carousels'));
 // const Collapses = React.lazy(() => import('./views/base/collapses/Collapses'));
-// const BasicForms = React.lazy(() => import('./views/base/forms/BasicForms'));
+ const AddUser = React.lazy(() => import('./views/users/AddUserForms'));
 
 // const Jumbotrons = React.lazy(() => import('./views/base/jumbotrons/Jumbotrons'));
 // const ListGroups = React.lazy(() => import('./views/base/list-groups/ListGroups'));
@@ -39,7 +39,7 @@ const Typography = React.lazy(
   () => import("./views/theme/typography/Typography")
 );
  const Widgets = React.lazy(() => import('./views/widgets/Widgets'));
-const Users = React.lazy(() => import("./views/users/Users"));
+const Users = React.lazy(() => import("./views/users/UserDataResult"));
 const User = React.lazy(() => import("./views/users/User"));
 
 const routes: any = [
@@ -53,7 +53,7 @@ const routes: any = [
   // { path: '/base/cards', name: 'Cards', component: Cards },
   // { path: '/base/carousels', name: 'Carousel', component: Carousels },
   // { path: '/base/collapses', name: 'Collapse', component: Collapses },
-  // { path: '/base/forms', name: 'Forms', component: BasicForms },
+   { path: '/users/AddUserForms',exact: true, name: 'Add Users', component: AddUser },
   // { path: '/base/jumbotrons', name: 'Jumbotrons', component: Jumbotrons },
   // { path: '/base/list-groups', name: 'List Groups', component: ListGroups },
   // { path: '/base/navbars', name: 'Navbars', component: Navbars },

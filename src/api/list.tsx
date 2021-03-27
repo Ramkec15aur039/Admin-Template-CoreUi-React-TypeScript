@@ -1,9 +1,6 @@
-import React from 'react'
+import { getListByApi, viewDataByApi } from "./actions";
+import { URL_CONSTANTS } from "./urls";
 
-export default function list() {
-    return (
-        <div>
-            
-        </div>
-    )
-}
+export const getUserList = (params) => {
+    return getListByApi(URL_CONSTANTS.users, params);
+  };

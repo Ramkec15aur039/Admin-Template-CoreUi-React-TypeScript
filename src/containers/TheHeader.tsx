@@ -23,9 +23,11 @@ import {
   TheHeaderDropdownTasks
 }  from './index'
 
+import {changeStateAction} from "../redux/actions/changeStateAction"
+
 const TheHeader = () => {
   const dispatch = useDispatch()
-  const sidebarShow = useSelector(state => state.sidebarShow)
+  const sidebarShow = useSelector(state => state.change_State.sidebarShow)
 
   const toggleSidebar = () => {
     const val = [true, 'responsive'].includes(sidebarShow) ? false : 'responsive'

@@ -35,7 +35,6 @@ class App extends Component {
               <Route exact path="/register" render={props => <Register name="Register Page" {...props}/>} />
               <Route exact path="/404" render={props => <Page404 name="Page 404" {...props}/>} />
               <Route exact path="/500" render={props => <Page500 name="Page 500"{...props}/>} />
-              <Route exact path="/500" render={props => <Page500 name="Page 500"{...props}/>} />
                 <Route
                   path="/"
                   render={(props: RouteComponentProps<any>) => (

@@ -63,7 +63,7 @@ const _nav =  [
       {
         _tag: 'CSidebarNavItem',
         name: 'Forms',
-        to: '/base/forms',
+        to: 'users/BasicForms',
       },
       {
         _tag: 'CSidebarNavItem',

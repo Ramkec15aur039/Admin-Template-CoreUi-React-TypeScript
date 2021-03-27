@@ -24,7 +24,7 @@ import navigation from "./_nav";
 import Logo from "./a.svg"
 const TheSidebar = () => {
   const dispatch = useDispatch();
-  const show = useSelector((state) => state.sidebarShow);
+  const show = useSelector((state) => state.change_State.sidebarShow);
   console.log("Redux:",show);
 
   return (

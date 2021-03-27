@@ -14,9 +14,15 @@ import {
   CInputGroupText,
   CRow
 } from '@coreui/react'
-import CIcon from '@coreui/icons-react'
+import CIcon from '@coreui/icons-react';
+import { TestAction } from "../../../redux/actions/testAction";
+import { useSelector, useDispatch } from "react-redux";
 
 const Login = (props:any) => {
+  const dispatch = useDispatch();
+  const test = useSelector((state) => state.test);
+  dispatch(TestAction());
+  console.log("Test Redux from login_page:", test);
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
