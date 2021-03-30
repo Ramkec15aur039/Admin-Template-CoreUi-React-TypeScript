@@ -1,11 +1,9 @@
-import React from 'react'
+/******************************** Import libs ************************************/
+import { deleteDataApi } from "./actions";
+import { URL_CONSTANTS } from "./urls";
 
-export default function deletes() {
-    return (
-        <div>
-            
-        </div>
-    )
-}
+export const deleteUser = (id) => {
+  return deleteDataApi(URL_CONSTANTS.users, id);
+};
 
 

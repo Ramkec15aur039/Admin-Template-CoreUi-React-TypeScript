@@ -124,12 +124,38 @@ export const getListByApi = (requestUrl, params) => {
 
 /******************************** View Api ************************************/
 export const viewDataByApi = (requestUrl, dataId) => {
+  console.log("Id from View API :) action:",dataId);
   return fetch(`${hostConfig.API_URL}${requestUrl}/${dataId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
       // Authorization: "Bearer " + token,
+    },
+  })
+    .then((response) => {
+      console.log("From Get users by ID",response)
+      return responseStatusHandler(response);
+    })
+    .then((result) => {
+      console.log("From Get users by ID",result)
+      return result.status === 200 || result.status === 201 || result.status === 400 ?
+        result.json()
+        : result
+    })
+    .catch((error) => {
+      errorHandler(error);
+    });
+};
+
+/******************************** Delete Api ************************************/
+export const deleteDataApi = (requestUrl, id) => {
+  return fetch(`${hostConfig.API_URL}${requestUrl}/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      //Authorization: "Bearer " + token,
     },
   })
     .then((response) => {
@@ -144,4 +170,3 @@ export const viewDataByApi = (requestUrl, dataId) => {
       errorHandler(error);
     });
 };
-
