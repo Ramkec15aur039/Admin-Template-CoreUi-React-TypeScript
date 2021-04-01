@@ -170,3 +170,28 @@ export const deleteDataApi = (requestUrl, id) => {
       errorHandler(error);
     });
 };
+
+/******************************** Update Api ************************************/
+export const putDataApi = (requestUrl, params, id) => {
+  console.log("From Update API:", params);
+  return fetch(`${hostConfig.API_URL}${requestUrl}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      //Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify(params),
+  })
+    .then((response) => {
+      return responseStatusHandler(response);
+    })
+    .then((result) => {
+      return result.status === 200 || result.status === 201 || result.status === 400 ?
+        result.json()
+        : result
+    })
+    .catch((error) => {
+      errorHandler(error);
+    });
+};

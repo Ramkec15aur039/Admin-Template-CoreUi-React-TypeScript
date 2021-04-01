@@ -1,10 +1,9 @@
 
-export const usersData = [
-  {
-    id: 0,
-    name: "John Doe",
-    registered: "2018/01/01",
-    role: "Guest",
-    status: "Pending",
-  },
-];
+// Initialise array
+export let usersData:any = [];
+
+//To store updated values in array
+export let usersDataFn = (data) => {
+  console.log("Data check in userData:)) from props:", data);
+  usersData = data;
+};

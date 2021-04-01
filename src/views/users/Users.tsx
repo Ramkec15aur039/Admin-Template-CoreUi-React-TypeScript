@@ -17,15 +17,12 @@ import {
   CModalHeader,
   CModalTitle,
 } from "@coreui/react";
-import { Link } from "react-router-dom";
-//import {usersData} from "./UsersData";
 import "./Users.css";
 import * as BoxIcon from "react-icons/bi";
 import * as RemixIcon from "react-icons/ri";
 import { deleteUser } from "../../api/delete";
-import BasicForms from "./AddUserForms";
-import { Modals } from "../model/model";
-import EditUserForms from "./EditUser"
+import EditUserForms from "./EditUser";
+import { usersDataFn } from "./UsersData";
 
 const getBadge = (status) => {
   switch (status) {
@@ -42,22 +39,40 @@ const getBadge = (status) => {
   }
 };
 
+/***********************************Response Handler****************************************/
+const responseHandler = (res) => {
+  if (res) {
+    if (res.code) {
+      if (res.code === 400) {
+        //console.log(console.log(res.message));
+        return false;
+      } else {
+        //console.log("Bad Request");
+        return false;
+      }
+    } else if (res.error) {
+      //console.log(res.error);
+      return false;
+    } else {
+      return res;
+    }
+  } else {
+    return false;
+  }
+};
+
 const Users = (props: any) => {
   const history = useHistory();
   const queryPage = useLocation().search.match(/page=([0-9]+)/);
   const currentPage = Number(queryPage && queryPage[1] ? queryPage[1] : 1);
   const [page, setPage] = useState(currentPage);
   const [onClickRow, setOnClickRow] = useState(true);
-  const data =[... props.userData];
-  const [model, setModel] = useState(false);
+  let data: any = props.userData;
   const [warning, setWarning] = useState(false);
-  const [yes, setYes] = useState(false);
   const [deleteId, setDeleteId] = useState("");
-  const [editId, setEditId] = useState("");
   const [selectedUserData, setSelectedUserData] = useState([]);
   const [modelStateDelete, setModelStateDelete] = useState("");
   const [large, setLarge] = useState(false);
-  
 
   const pageChange = (newPage) => {
     currentPage !== newPage && history.push(`/users?page=${newPage}`);
@@ -66,7 +81,21 @@ const Users = (props: any) => {
   useEffect(() => {
     currentPage !== page && setPage(currentPage);
   }, [currentPage, page]);
-  
+
+  const getApiDelete = () => {
+    props.getApiUpdated();
+    setWarning(false);
+  };
+
+  const getApiForEdit = () => {
+    props.getApiUpdated();
+    setLarge(false);
+  };
+
+  //To Update values in UserData
+  const userDataFunctionCall = usersDataFn(data);
+  console.log("Props data array->", data);
+
   return (
     <>
       <CRow>
@@ -88,9 +117,9 @@ const Users = (props: any) => {
                 items={data}
                 fields={[
                   { key: "name", _classes: "font-weight-bold" },
-                  "registered",
+                  "createdAt",
                   "role",
-                  "status",
+                  "email",
                   "Actions",
                 ]}
                 hover
@@ -115,8 +144,8 @@ const Users = (props: any) => {
                         <CButton
                           color="success"
                           onClick={() => {
-                            setSelectedUserData(item)
-                            setLarge(!large)
+                            setSelectedUserData(item);
+                            setLarge(!large);
                           }}
                           onMouseEnter={() => setOnClickRow(false)}
                           onMouseLeave={() => setOnClickRow(true)}
@@ -127,79 +156,96 @@ const Users = (props: any) => {
 
                         <CButton
                           onClick={() => {
-                          setModelStateDelete("Are you sure want to delete!!!")
-                          setWarning(true)
-                          setDeleteId(item.id)                          
-                        }}
-                        onMouseEnter={() => setOnClickRow(false)}
-                        onMouseLeave={() => setOnClickRow(true)}
-                        color="danger"
-                      >
-                        <RemixIcon.RiDeleteBin6Line size={20} />
-                      </CButton>
-                    </td>
-                  );
-                },
+                            setModelStateDelete(
+                              "Are you sure want to delete!!!"
+                            );
+                            setWarning(true);
+                            setDeleteId(item.id);
+                          }}
+                          onMouseEnter={() => setOnClickRow(false)}
+                          onMouseLeave={() => setOnClickRow(true)}
+                          color="danger"
+                        >
+                          <RemixIcon.RiDeleteBin6Line size={20} />
+                        </CButton>
+                      </td>
+                    );
+                  },
+                }}
+              />
+              <CPagination
+                activePage={page}
+                onActivePageChange={pageChange}
+                pages={5}
+                doubleArrows={false}
+                align="center"
+              />
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+
+      {/*********************** Model Delete User *************************/}
+      {warning ? (
+        <CModal
+          show={warning}
+          color="danger"
+          onClose={() => setWarning(!warning)}
+          size="lg"
+        >
+          <CModalHeader closeButton>
+            <CModalTitle>Delete User</CModalTitle>
+          </CModalHeader>
+          <CModalBody>{modelStateDelete}</CModalBody>
+          <CModalFooter>
+            <CButton
+              color="primary"
+              onClick={() => {
+                setWarning(!warning);
+                deleteUser(deleteId).then((res) => {
+                  console.log("Get in delete API running");
+                  if (responseHandler(res)) {
+                    getApiDelete();
+                  }
+                });
+                setDeleteId("");
               }}
-            />
-            <CPagination
-              activePage={page}
-              onActivePageChange={pageChange}
-              pages={5}
-              doubleArrows={false}
-              align="center"
-            />
-          </CCardBody>
-        </CCard>
-      </CCol>
-    </CRow>
+            >
+              Yes
+            </CButton>
+            <CButton
+              color="secondary"
+              onClick={() => {
+                setWarning(!warning);
+                setDeleteId("");
+              }}
+            >
+              No
+            </CButton>
+          </CModalFooter>
+        </CModal>
+      ) : null}
 
-    {/* Model warning*/}
-    <CModal
-      show={warning}
-        color="danger"
-        onClose={() => setWarning(!warning)}
-        size="lg"
-      >
-        <CModalHeader closeButton>
-          <CModalTitle>Delete User</CModalTitle>
-        </CModalHeader>
-        <CModalBody>{modelStateDelete}</CModalBody>
-        <CModalFooter>
-          <CButton
-            color="primary"
-            onClick={()=>{
-              setWarning(!warning);
-              deleteUser(deleteId)
-              setDeleteId("")
-              window.location.reload()
-            }}
-          >   
-            Yes
-          </CButton>{" "}
-          <CButton
-            color="secondary"
-            onClick={() => {
-              setWarning(!warning);
-              setDeleteId("")
-            }}
-          >
-            No
-          </CButton>
-        </CModalFooter>
-      </CModal>
-
-      {/* Model success*/}
-      <CModal show={large} color="warning" onClose={() => setLarge(!large)} size="lg">
-      <CModalHeader closeButton>
-        <CModalTitle>Create User Status</CModalTitle>
-      </CModalHeader>
-      <CModalBody>
-        <EditUserForms userData={selectedUserData} />
-      </CModalBody>
-      <CModalFooter>
-      </CModalFooter>
-    </CModal>
+      {/******************* Model Edit User **********************/}
+      {large ? (
+        <CModal
+          show={large}
+          color="warning"
+          onClose={() => setLarge(!large)}
+          size="lg"
+        >
+          <CModalHeader closeButton>
+            <CModalTitle>Update User</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+            <EditUserForms
+              userData={selectedUserData}
+              getUpdatedData={getApiForEdit}
+            />
+          </CModalBody>
+          <CModalFooter></CModalFooter>
+        </CModal>
+      ) : null}
     </>
   );
 };

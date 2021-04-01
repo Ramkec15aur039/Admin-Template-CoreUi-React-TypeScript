@@ -1,18 +1,16 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { CCard, CCardBody, CCardHeader, CCol, CRow } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-//import { usersData } from "./UsersData";
+import { usersData } from "./UsersData";
 import { TestAction } from "../../redux/actions/testAction";
 import { useSelector, useDispatch } from "react-redux";
-import { useStore } from "react-redux";
+
 
 const User = ({ match }) => {
-  const store = useStore();
-  const reduxUserDetail = store.getState();
-  //console.log("Finally -user from redux store:", reduxUserDetail.userDetail.state);
-  const usersData = reduxUserDetail.userDetail.state;
+  console.table(match);
+  console.log("User data from user:->>>>>", usersData);
   const user = usersData.find((user) => user.id.toString() === match.params.id);
-  const userDetails: any=user
+  let userDetails: any = user
     ? Object.entries(user)
     : [
         [
@@ -22,11 +20,12 @@ const User = ({ match }) => {
           </span>,
         ],
       ];
-  console.log("Clickable Row user details:", userDetails);
+
+  //Sample Redux
   const dispatch = useDispatch();
   const test = useSelector((state) => state.test);
   dispatch(TestAction());
-  console.log("Test Redux from User:", test);
+
   return (
     <CRow>
       <CCol lg={6}>
@@ -35,16 +34,17 @@ const User = ({ match }) => {
           <CCardBody>
             <table className="table table-striped table-hover">
               <tbody>
-                {userDetails.map(([key, value], index) => {
-                  return (
-                    <tr key={index.toString()}>
-                      <td>{`${key}:`}</td>
-                      <td>
-                        <strong>{value}</strong>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {userDetails.map(([key,value],index) => {
+                 return key!=="id" && key!=="isAdmin" ?                  //Conditional mapping
+                     (
+                      <tr key={index.toString()}>
+                        <td>{`${key}:`}</td>
+                        <td>
+                          <strong>{value}</strong>
+                        </td>
+                      </tr>
+                    ):null
+                    })}
               </tbody>
             </table>
           </CCardBody>

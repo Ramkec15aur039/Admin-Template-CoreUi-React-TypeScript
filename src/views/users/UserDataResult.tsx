@@ -1,27 +1,15 @@
-import { CButton } from "@coreui/react";
 import React, { useState, useEffect } from "react";
 import { getUserList } from "../../api/list";
 import Users from "./Users";
-import {storeUserDataAction} from "../../redux/actions/storeUserDataAction";
-import { useSelector, useDispatch } from 'react-redux';
-// import { useStore } from 'react-redux'
+import { storeUserDataAction } from "../../redux/actions/storeUserDataAction";
+import { object } from "prop-types";
 
 export default function UsersDataResult() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers]: any = useState([]);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [totalResults, setTotalResults] = useState(0);
   const [page, setPage] = React.useState(0);
-  const storeData:any = [];
-  //console.log("User data from storedArray:", storeData);
-  //console.log("From API:", users);
-  
-  
-  const dispatch = useDispatch();
-  //const store = useStore()
-  //const reduxUserDetail = store.getState();
-  //console.log("From redux store:",reduxUserDetail);
-  dispatch(storeUserDataAction(storeData));
-  
+
   /***********************************Response Handler****************************************/
   const responseHandler = (res) => {
     if (res) {
@@ -48,6 +36,10 @@ export default function UsersDataResult() {
     let currentPage = page + 1;
     getUserList({ currentPage, rowsPerPage }).then((res) => {
       if (responseHandler(res)) {
+        res.results.map((item: any, index) => {
+          item.name = item.firstName + " " + item.lastName;
+          item.isActive =  (item.isActive == true) ? "active" : "Not Active";
+        });
         setUsers(res.results);
         setTotalResults(res.totalResults);
       }
@@ -58,20 +50,9 @@ export default function UsersDataResult() {
     initialUserData();
   }, []);
 
-  users.map((item: any, index) => {
-    storeData.push({
-      id: item.id,
-      firstName:item.firstName,
-      lastName:item.lastName,
-      name: item.firstName + " " + item.lastName,
-      registered: item.createdAt,
-      role: item.role,
-      status: item.isActive ? "Active" : "Not Active",
-      email: item.email,
-      officePhone:item.officePhone,
-      fax:item.fax,
-      mobile:item.mobile
-    });
-  });
-  return <Users userData={storeData} />;
+  // Sample Redux
+  console.log("Users from userDataResult:", users);
+  console.log("Total Result from userDataResult:", totalResults);
+
+  return <Users userData={users} getApiUpdated={initialUserData} />;
 }

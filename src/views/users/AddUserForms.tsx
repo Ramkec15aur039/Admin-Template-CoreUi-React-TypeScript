@@ -3,51 +3,27 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardFooter,
   CCardHeader,
   CCol,
-  CCollapse,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CFade,
   CForm,
   CFormGroup,
-  CFormText,
-  CValidFeedback,
-  CInvalidFeedback,
-  CTextarea,
   CInput,
-  CInputFile,
-  CInputCheckbox,
-  CInputRadio,
-  CInputGroup,
-  CInputGroupAppend,
-  CInputGroupPrepend,
-  CDropdown,
-  CInputGroupText,
   CLabel,
-  CSelect,
   CRow,
-  CSwitch,
   CModal,
   CModalBody,
   CModalFooter,
   CModalHeader,
   CModalTitle,
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
-import { DocsLink } from "../../reusable";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-/**** API import *****/
+/***************** API import *********************/
 import { postUserData } from "../../api/create";
+import { getUserList } from "../../api/list";
 
-import { Link } from 'react-router-dom';
-import { BiWindows } from "react-icons/bi";
-import {Modals} from "../model/model"
 
-const BasicForms = (props:any) => {
+const BasicForms = (props: any) => {
   const [collapsed, setCollapsed] = React.useState(true);
   const [showElements, setShowElements] = React.useState(true);
   const [modelState, setModelState] = useState("");
@@ -61,7 +37,7 @@ const BasicForms = (props:any) => {
   const [fax, setfax] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [large, setLarge] = useState(false);
-  console.log("Model state:",large);
+  const [page, setPage] = React.useState(0);
 
   /***********************************Response Handler****************************************/
   const responseHandler = (res) => {
@@ -86,7 +62,6 @@ const BasicForms = (props:any) => {
   };
 
   const handleChange = (e) => {
-    console.log(e.target.value)
     const targetName = e.target.name;
     const value = e.target.value;
 
@@ -124,13 +99,14 @@ const BasicForms = (props:any) => {
       if (responseHandler(res)) {
         setModelState("Submited successfully!!!");
         setLarge(true);
-      }
-      else{
+        let currentPage = page + 1;
+        getUserList(currentPage);
+      } else {
         setModelState(res.error ? res.error : res.message);
         setLarge(true);
       }
     });
-  };  
+  };
 
   return (
     <>
@@ -218,23 +194,27 @@ const BasicForms = (props:any) => {
         </CCol>
       </CRow>
 
-      {/* Model */}
-      <CModal show={large} color="success" onClose={() => setLarge(!large)} size="lg">
-      <CModalHeader closeButton>
-        <CModalTitle>Create User Status</CModalTitle>
-      </CModalHeader>
-      <CModalBody>
-        {modelState}
-      </CModalBody>
-      <CModalFooter>
-        <CButton color="primary" onClick={() => {setLarge(!large);window.location.href="/users"}}>
-          User Details
-        </CButton>{" "}
-        <CButton color="secondary" onClick={() => setLarge(!large)}>
-          Cancel
-        </CButton>
-      </CModalFooter>
-    </CModal>
+      {/********************** Model Add User ***********************/}
+      <CModal
+        show={large}
+        color="success"
+        onClose={() => setLarge(!large)}
+        size="lg"
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>Create User Status</CModalTitle>
+        </CModalHeader>
+        <CModalBody>{modelState}</CModalBody>
+        <CModalFooter>
+          <CButton
+            color="secondary"
+            onClick={() => setLarge(!large)}
+            to="/users"
+          >
+            ok
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </>
   );
 };

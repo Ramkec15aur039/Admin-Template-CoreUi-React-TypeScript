@@ -4,55 +4,35 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardFooter,
   CCardHeader,
   CCol,
-  CCollapse,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
-  CFade,
   CForm,
   CFormGroup,
-  CFormText,
-  CValidFeedback,
-  CInvalidFeedback,
-  CTextarea,
   CInput,
-  CInputFile,
-  CInputCheckbox,
-  CInputRadio,
-  CInputGroup,
-  CInputGroupAppend,
-  CInputGroupPrepend,
-  CDropdown,
-  CInputGroupText,
   CLabel,
-  CSelect,
   CRow,
-  CSwitch,
 } from "@coreui/react";
-import { getUserById } from "../../api/list";
+import { updateUserData } from "../../api/updates";
 
 const EditUserForms = (props) => {
-  const [collapsed, setCollapsed] = React.useState(true);
-  const [showElements, setShowElements] = React.useState(true);
-  //  let propsData = props.data;
-  //const [users, setUsers] = useState([]);
-  //console.log("User Detail props-> firstName:", props.userData);
   const [values, setValues]: any = useState([]);
-
   const [firstName, setFirstName] = useState("");
-  //setFirstName(props.data)s
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [officePhone, setOfficePhone] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [fax, setFax] = useState("");
+  const [role, setRole] = useState("");
 
+  //To set "User Data value" from "props" to "State"
   useEffect(() => {
     console.log("User Detail props-> firstName:", props.userData);
-    setValues({
-      ...props.userData,
-    });
+    if (props.userData !== undefined) {
+      setValues({
+        ...props.userData,
+      });
+    }
   }, [props.userData, setValues]);
-
-  // console.log("idUserArray:", values);
 
   /***********************************Response Handler****************************************/
   const responseHandler = (res) => {
@@ -76,37 +56,61 @@ const EditUserForms = (props) => {
     }
   };
 
-  //   const handleSubmit = () => {
-  //     let user = {
-  //       firstName: firstName,
-  //       lastName: lastName,
-  //       email: email,
-  //       officePhone: officePhone,
-  //       mobile: mobile,
-  //       fax: fax,
-  //     };
-  //     console.log("From AddUserForm:", user);
-  //     postUserData(user).then((res) => {
-  //       if (responseHandler(res)) {
-  //         alert("Submitted Successfully");
-  //       }
-  //     });
-  //   };
-  console.log("Input state:",values);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let user = {
+      firstName: firstName || props.userData.firstName,
+      lastName: lastName || props.userData.lastName,
+      email: email || props.userData.email,
+      officePhone: officePhone || props.userData.officePhone,
+      mobile: mobile || props.userData.mobile,
+      fax: fax || props.userData.fax,
+      role: role || props.userData.role
+    };
+    console.log("From EditUserForm Submit section:", user);
+    updateUserData(user, props.userData.id).then((res) => {
+      if (responseHandler(res)) {
+        props.getUpdatedData();
+      } else {
+        console.log("Updation failed!!!");
+      }
+    });
+  };
+
   const handleChange = (e) => {
+    e.preventDefault();
     const targetName = e.target.name;
     const value = e.target.value;
-    if (
-      targetName === "firstName" ||
-      targetName === "lastName" ||
-      targetName === "email" ||
-      targetName === "officePhone" ||
-      targetName === "fax"
-    ) {
+    if (targetName === "firstName") {
       setValues(value);
+      setFirstName(value);
+    }
+    if (targetName === "lastName") {
+      setValues(value);
+      setLastName(value);
+    }
+    if (targetName === "email") {
+      setValues(value);
+      setEmail(value);
+    }
+    if (targetName === "officePhone") {
+      setValues(value);
+      setOfficePhone(value);
+    }
+    if (targetName === "mobile") {
+      setValues(value);
+      setMobile(value);
+    }
+    if (targetName === "fax") {
+      setValues(value);
+      setFax(value);
+    }
+    if (targetName === "role") {
+      setValues(value);
+      setRole(value);
     }
   };
-  
+
   return (
     <>
       <CRow>
@@ -117,11 +121,11 @@ const EditUserForms = (props) => {
               <small> Form</small>
             </CCardHeader>
             <CCardBody>
-              <CForm>
+              <CForm onSubmit={handleSubmit}>
                 <CFormGroup>
                   <CLabel htmlFor="company">First Name</CLabel>
                   <CInput
-                    id="company"
+                    id="firstName"
                     placeholder="Enter First Name"
                     name="firstName"
                     onChange={handleChange}
@@ -174,15 +178,31 @@ const EditUserForms = (props) => {
                     </CFormGroup>
                   </CCol>
                 </CFormGroup>
-                <CFormGroup>
-                  <CLabel htmlFor="country">Fax</CLabel>
-                  <CInput
-                    id="country"
-                    placeholder="Fax"
-                    name="fax"
-                    onChange={handleChange}
-                    value={values.fax}
-                  />
+                <CFormGroup row className="my-0">
+                  <CCol xs="6">
+                    <CFormGroup>
+                      <CLabel htmlFor="country">Fax</CLabel>
+                      <CInput
+                        id="country"
+                        placeholder="Fax"
+                        name="fax"
+                        onChange={handleChange}
+                        value={values.fax}
+                      />
+                    </CFormGroup>
+                  </CCol>
+                  <CCol xs="6">
+                    <CFormGroup>
+                      <CLabel htmlFor="country">Role</CLabel>
+                      <CInput
+                        id="country"
+                        placeholder="role"
+                        name="role"
+                        onChange={handleChange}
+                        value={values.role}
+                      />
+                    </CFormGroup>
+                  </CCol>
                 </CFormGroup>
                 <CButton type="submit" color="primary">
                   Submit
